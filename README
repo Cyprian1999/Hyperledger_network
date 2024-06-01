@@ -1,0 +1,40 @@
+0. jeśli wcześniej używaliśmy skryptów warto najpierw użyć ./clean.sh
+1. w ./Docker_files odpalamy
+docker-compose -f tls-ca.yaml up -d
+2. Kopiujemy ca-cert.pem do /home/cyprian/Desktop/Hyperledger_network/Configuration/Tls-ca/crypto/ca-cert.pem za pomocą ./copyingTlsCaCert.sh
+3. w ./Scripts odpalamy ./registeringPeers.sh
+4. w ./Docker_files odpalamy
+docker-compose -f  ca-organisations.yaml up -d
+5. Kopiujemy ca-cert do /home/cyprian/Desktop/Hyperledger_network/Configuration/HospitalA/ca/crypto/ca-cert.pem itd. za pomocą
+./copyingTlsCaPeersCerts.sh
+6. w ./Scripts odpalamy ./registeringIdentieties.sh
+7. Kopiujemy ca-cert do peerów za pomocą ./copyingOrganisationsCerts.sh
+8. w ./Scripts odpalamy ./enrollingPeers.sh
+9. w ./Scripts odpalamy ./copyingAdminCerts.sh
+10. w ./Scripts odpalamy ./renamingKeys.sh
+11. w ./Docker_files odpalamy
+docker-compose -f peer-organisations.yaml up -d
+12. w ./Scripts odpalamy ./enrollingOrderer.sh
+13. w ./Scripts odpalamy ./creatingOrganisationsMsp.sh
+14. w terminalu używamy komend
+export FABRIC_CFG_PATH=/home/cyprian/Desktop/Hyperledger_network/ConfigTx/
+i w katalogu ConfigTx
+configtxgen -profile TwoOrgsOrdererGenesis -outputBlock /home/cyprian/Desktop/Hyperledger_network/Configuration/Orderer/orderer/genesis.block -channelID syschannel
+configtxgen -profile TwoOrgsChannel -outputCreateChannelTx /home/cyprian/Desktop/Hyperledger_network/Configuration/Orderer/orderer/channel.tx -channelID mychannel
+15. w ./Scripts odpalamy ./copyingChannelTx.sh
+16. w ./Docker_files odpalamy
+docker-compose -f orderer.yaml up -d
+17. w ./Docker_files odpalamy
+docker-compose -f cli.yaml up -d
+Wszystkie powyższe kroki wykonuje skrypt run.sh w głównym katalogu
+18. docker exec -it cli-hospitala sh
+i wywołujemy te komendy
+# export CORE_PEER_MSPCONFIGPATH=/tmp/hyperledger/HospitalA/Peer1/msp
+# peer channel create -c mychannel -f /tmp/hyperledger/HospitalA/Peer1/assets/channel.tx -o orderer:7050 --outputBlock /tmp/hyperledger/HospitalA/Peer1/assets/mychannel.block --tls --cafile /tmp/hyperledger/HospitalA/Peer1/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem
+
+
+ENVIRONMENTAL VARIABLES FOR HOST
+export FABRIC_CA_CLIENT_TLS_CERTFILES=/home/cyprian/Desktop/Hyperledger_network/Configuration/Tls-ca/crypto/ca-cert.pem
+
+todo
+ogarnąć organisations cli - napisać do nich .yaml - może przetestować tworzenie kanałów
