@@ -1,0 +1,80 @@
+version: '2'
+
+services:
+  cli-hospitala:
+     container_name: cli-hospitala
+     image: hyperledger/fabric-tools
+     tty: true
+     stdin_open: true
+     environment:
+       - GOPATH=/opt/gopath
+       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+       - FABRIC_LOGGING_SPEC=DEBUG
+       - CORE_PEER_ID=cli-hospitala
+       - CORE_PEER_ADDRESS=peer1-hospitala:7051
+       - CORE_PEER_LOCALMSPID=HospitalAMSP
+       - CORE_PEER_TLS_ENABLED=true
+       - CORE_PEER_TLS_ROOTCERT_FILE=/tmp/hyperledger/HospitalA/peer1/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem
+       - CORE_PEER_MSPCONFIGPATH=/tmp/hyperledger/HospitalA/admin/msp
+     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/HospitalA
+     command: sh
+     volumes:
+       - /tmp/hyperledger/HospitalA/peer1:/tmp/hyperledger/HospitalA/peer1
+       - /tmp/hyperledger/HospitalA/peer2:/tmp/hyperledger/HospitalA/peer2
+       - /tmp/hyperledger/HospitalA/peer1/assets/chaincode:/opt/gopath/src/github.com/hyperledger/fabric-samples/chaincode
+       - /tmp/hyperledger/HospitalA/admin:/tmp/hyperledger/HospitalA/admin
+     networks:
+       - fabric-ca
+  
+  cli-hospitalb:
+     container_name: cli-hospitalb
+     image: hyperledger/fabric-tools
+     tty: true
+     stdin_open: true
+     environment:
+       - GOPATH=/opt/gopath
+       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+       - FABRIC_LOGGING_SPEC=DEBUG
+       - CORE_PEER_ID=cli-hospitalb
+       - CORE_PEER_ADDRESS=peer1-hospitalb:7051
+       - CORE_PEER_LOCALMSPID=HospitalBMSP
+       - CORE_PEER_TLS_ENABLED=true
+       - CORE_PEER_TLS_ROOTCERT_FILE=/tmp/hyperledger/HospitalB/peer1/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem
+       - CORE_PEER_MSPCONFIGPATH=/tmp/hyperledger/HospitalB/admin/msp
+     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/HospitalB
+     command: sh
+     volumes:
+       - /tmp/hyperledger/HospitalB/peer1:/tmp/hyperledger/HospitalB/peer1
+       - /tmp/hyperledger/HospitalB/peer2:/tmp/hyperledger/HospitalB/peer2
+       - /tmp/hyperledger/HospitalB/peer1/assets/chaincode:/opt/gopath/src/github.com/hyperledger/fabric-samples/chaincode
+       - /tmp/hyperledger/HospitalB/admin:/tmp/hyperledger/HospitalB/admin
+     networks:
+       - fabric-ca
+  
+  cli-insuranceProvider:
+     container_name: cli-insuranceProvider
+     image: hyperledger/fabric-tools
+     tty: true
+     stdin_open: true
+     environment:
+       - GOPATH=/opt/gopath
+       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+       - FABRIC_LOGGING_SPEC=DEBUG
+       - CORE_PEER_ID=cli-insuranceProvider
+       - CORE_PEER_ADDRESS=peer1-insuranceProvider:7051
+       - CORE_PEER_LOCALMSPID=InsuranceProviderMSP
+       - CORE_PEER_TLS_ENABLED=true
+       - CORE_PEER_TLS_ROOTCERT_FILE=/tmp/hyperledger/InsuranceProvider/peer1/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem
+       - CORE_PEER_MSPCONFIGPATH=/tmp/hyperledger/InsuranceProvider/admin/msp
+     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/InsuranceProvider
+     command: sh
+     volumes:
+       - /tmp/hyperledger/InsuranceProvider/peer1:/tmp/hyperledger/InsuranceProvider/peer1
+       - /tmp/hyperledger/InsuranceProvider/peer2:/tmp/hyperledger/InsuranceProvider/peer2
+       - /tmp/hyperledger/InsuranceProvider/peer1/assets/chaincode:/opt/gopath/src/github.com/hyperledger/fabric-samples/chaincode
+       - /tmp/hyperledger/InsuranceProvider/admin:/tmp/hyperledger/InsuranceProvider/admin
+     networks:
+       - fabric-ca
+networks:
+  fabric-ca:
+    driver: bridge

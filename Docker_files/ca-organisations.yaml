@@ -1,0 +1,74 @@
+version: '2'
+
+services:
+  ca-orderer:
+    container_name: ca-orderer
+    image: hyperledger/fabric-ca
+    command: sh -c 'fabric-ca-server start -d -b admin:adminpw --port 7054'
+    environment:
+      - FABRIC_CA_SERVER_HOME=/tmp/hyperledger/fabric-ca/crypto
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_CSR_CN=ca-orderer
+      - FABRIC_CA_SERVER_CSR_HOSTS=0.0.0.0
+      - FABRIC_CA_SERVER_DEBUG=true
+    volumes:
+      - /tmp/hyperledger/Orderer/ca:/tmp/hyperledger/fabric-ca
+    networks:
+      - fabric-ca
+    ports:
+      - 7054:7054
+
+  ca-hospitala:
+    container_name: ca-hospitala
+    image: hyperledger/fabric-ca
+    command: sh -c 'fabric-ca-server start -d -b admin:adminpw --port 8054'
+    environment:
+      - FABRIC_CA_SERVER_HOME=/tmp/hyperledger/fabric-ca/crypto
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_CSR_CN=ca-hospitala
+      - FABRIC_CA_SERVER_CSR_HOSTS=0.0.0.0
+      - FABRIC_CA_SERVER_DEBUG=true
+    volumes:
+      - /tmp/hyperledger/HospitalA/ca:/tmp/hyperledger/fabric-ca
+    networks:
+      - fabric-ca
+    ports:
+      - 8054:8054
+
+  ca-hospitalb:
+    container_name: ca-hospitalb
+    image: hyperledger/fabric-ca
+    command: sh -c 'fabric-ca-server start -d -b admin:adminpw --port 9054'
+    environment:
+      - FABRIC_CA_SERVER_HOME=/tmp/hyperledger/fabric-ca/crypto
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_CSR_CN=ca-hospitalb
+      - FABRIC_CA_SERVER_CSR_HOSTS=0.0.0.0
+      - FABRIC_CA_SERVER_DEBUG=true
+    volumes:
+      - /tmp/hyperledger/HospitalB/ca:/tmp/hyperledger/fabric-ca
+    networks:
+      - fabric-ca
+    ports:
+      - 9054:9054
+
+  ca-insurance-provider:
+    container_name: ca-insurance-provider
+    image: hyperledger/fabric-ca
+    command: sh -c 'fabric-ca-server start -d -b admin:adminpw --port 10054'
+    environment:
+      - FABRIC_CA_SERVER_HOME=/tmp/hyperledger/fabric-ca/crypto
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_CSR_CN=ca-insurance-provider
+      - FABRIC_CA_SERVER_CSR_HOSTS=0.0.0.0
+      - FABRIC_CA_SERVER_DEBUG=true
+    volumes:
+      - /tmp/hyperledger/InsuranceProvider/ca:/tmp/hyperledger/fabric-ca
+    networks:
+      - fabric-ca
+    ports:
+      - 10054:10054
+
+networks:
+  fabric-ca:
+    driver: bridge

@@ -1,0 +1,172 @@
+---
+Organizations:
+
+    - &Orderer
+        Name: Orderer
+        ID: OrdererMSP
+        MSPDir: /tmp/hyperledger/Orderer/msp
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('OrdererMSP.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('OrdererMSP.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('OrdererMSP.admin')"
+
+    - &HospitalA
+        Name: HospitalA
+        ID: HospitalAMSP
+        MSPDir: /tmp/hyperledger/HospitalA/msp
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('HospitalAMSP.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('HospitalAMSP.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('HospitalAMSP.admin')"
+
+    - &HospitalB
+        Name: HospitalB
+        ID: HospitalBMSP
+        MSPDir: /tmp/hyperledger/HospitalB/msp
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('HospitalBMSP.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('HospitalBMSP.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('HospitalBMSP.admin')"
+
+    - &InsuranceProvider
+        Name: InsuranceProvider
+        ID: InsuranceProviderMSP
+        MSPDir: /tmp/hyperledger/InsuranceProvider/msp
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('InsuranceProviderMSP.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('InsuranceProviderMSP.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('InsuranceProviderMSP.admin')"
+
+Capabilities:
+    Channel: &ChannelCapabilities
+        V2_0: true
+    Orderer: &OrdererCapabilities
+        V2_0: true
+    Application: &ApplicationCapabilities
+        V2_0: true
+
+Application: &ApplicationDefaults
+    Organizations:
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "ANY Admins"
+    Capabilities:
+        <<: *ApplicationCapabilities
+
+Orderer: &OrdererDefaults
+    OrdererType: solo
+    Addresses:
+        - orderer:7050
+    BatchTimeout: 2s
+    BatchSize:
+        MaxMessageCount: 10
+        AbsoluteMaxBytes: 99 MB
+        PreferredMaxBytes: 512 KB
+    Organizations:
+        - *Orderer
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "ANY Admins"
+        BlockValidation:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+    Capabilities:
+        <<: *OrdererCapabilities
+
+Channel: &ChannelDefaults
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "ANY Admins"
+    Capabilities:
+        <<: *ChannelCapabilities
+
+Profiles:
+    OrgsOrdererGenesis:
+        <<: *ChannelDefaults
+        Orderer:
+            <<: *OrdererDefaults
+            Capabilities:
+                <<: *OrdererCapabilities
+        Consortiums:
+            HealthConsortium:
+                Organizations:
+                    - *HospitalA
+                    - *HospitalB
+                    - *InsuranceProvider
+
+    ThreeOrgsChannel:
+        Consortium: HealthConsortium
+        <<: *ChannelDefaults
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *HospitalA
+                - *HospitalB
+                - *InsuranceProvider
+            Capabilities:
+                <<: *ApplicationCapabilities
+    DataAChannel:
+        Consortium: HealthConsortium
+        <<: *ChannelDefaults
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *HospitalA
+                - *InsuranceProvider
+            Capabilities:
+                <<: *ApplicationCapabilities
+    DataBChannel:
+        Consortium: HealthConsortium
+        <<: *ChannelDefaults
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *HospitalB
+                - *InsuranceProvider
+            Capabilities:
+                <<: *ApplicationCapabilities

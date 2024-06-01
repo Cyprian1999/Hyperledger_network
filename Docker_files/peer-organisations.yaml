@@ -1,0 +1,159 @@
+version: '2'
+
+services:
+  peer1-hospitala:
+    container_name: peer1-hospitala
+    image: hyperledger/fabric-peer
+    environment:
+      - CORE_PEER_ID=peer1-hospitala
+      - CORE_PEER_ADDRESS=peer1-hospitala:7051
+      - CORE_PEER_LOCALMSPID=HospitalAMSP
+      - CORE_PEER_MSPCONFIGPATH=/tmp/hyperledger/HospitalA/peer1/msp
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=guide_fabric-ca
+      - FABRIC_LOGGING_SPEC=debug
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/tmp/hyperledger/HospitalA/peer1/tls-msp/signcerts/cert.pem
+      - CORE_PEER_TLS_KEY_FILE=/tmp/hyperledger/HospitalA/peer1/tls-msp/keystore/key.pem
+      - CORE_PEER_TLS_ROOTCERT_FILE=/tmp/hyperledger/HospitalA/peer1/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem
+      - CORE_PEER_GOSSIP_USELEADERELECTION=true
+      - CORE_PEER_GOSSIP_ORGLEADER=false
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1-hospitala:7051
+      - CORE_PEER_GOSSIP_SKIPHANDSHAKE=true
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/HospitalA/peer1
+    volumes:
+      - /var/run:/host/var/run
+      - /tmp/hyperledger/HospitalA/peer1:/tmp/hyperledger/HospitalA/peer1
+    networks:
+      - fabric-ca
+  peer2-hospitala:
+    container_name: peer2-hospitala
+    image: hyperledger/fabric-peer
+    environment:
+      - CORE_PEER_ID=peer2-hospitala
+      - CORE_PEER_ADDRESS=peer2-hospitala:7051
+      - CORE_PEER_LOCALMSPID=HospitalAMSP
+      - CORE_PEER_MSPCONFIGPATH=/tmp/hyperledger/HospitalA/peer2/msp
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=guide_fabric-ca
+      - FABRIC_LOGGING_SPEC=debug
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/tmp/hyperledger/HospitalA/peer2/tls-msp/signcerts/cert.pem
+      - CORE_PEER_TLS_KEY_FILE=/tmp/hyperledger/HospitalA/peer2/tls-msp/keystore/key.pem
+      - CORE_PEER_TLS_ROOTCERT_FILE=/tmp/hyperledger/HospitalA/peer2/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem
+      - CORE_PEER_GOSSIP_USELEADERELECTION=true
+      - CORE_PEER_GOSSIP_ORGLEADER=false
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer2-hospitala:7051
+      - CORE_PEER_GOSSIP_SKIPHANDSHAKE=true
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1-hospitala:7051
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/HospitalA/peer2
+    volumes:
+      - /var/run:/host/var/run
+      - /tmp/hyperledger/HospitalA/peer2:/tmp/hyperledger/HospitalA/peer2
+    networks:
+      - fabric-ca
+  peer1-hospitalb:
+    container_name: peer1-hospitalb
+    image: hyperledger/fabric-peer
+    environment:
+      - CORE_PEER_ID=peer1-hospitalb
+      - CORE_PEER_ADDRESS=peer1-hospitalb:7051
+      - CORE_PEER_LOCALMSPID=HospitalBMSP
+      - CORE_PEER_MSPCONFIGPATH=/tmp/hyperledger/HospitalB/peer1/msp
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=guide_fabric-ca
+      - FABRIC_LOGGING_SPEC=debug
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/tmp/hyperledger/HospitalB/peer1/tls-msp/signcerts/cert.pem
+      - CORE_PEER_TLS_KEY_FILE=/tmp/hyperledger/HospitalB/peer1/tls-msp/keystore/key.pem
+      - CORE_PEER_TLS_ROOTCERT_FILE=/tmp/hyperledger/HospitalB/peer1/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem
+      - CORE_PEER_GOSSIP_USELEADERELECTION=true
+      - CORE_PEER_GOSSIP_ORGLEADER=false
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1-hospitalb:7051
+      - CORE_PEER_GOSSIP_SKIPHANDSHAKE=true
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/HospitalB/peer2
+    volumes:
+      - /var/run:/host/var/run
+      - /tmp/hyperledger/HospitalB/peer1:/tmp/hyperledger/HospitalB/peer1
+    networks:
+      - fabric-ca
+  peer2-hospitalb:
+    container_name: peer2-hospitalb
+    image: hyperledger/fabric-peer
+    environment:
+      - CORE_PEER_ID=peer2-hospitalb
+      - CORE_PEER_ADDRESS=peer2-hospitalb:7051
+      - CORE_PEER_LOCALMSPID=HospitalBMSP
+      - CORE_PEER_MSPCONFIGPATH=/tmp/hyperledger/HospitalB/peer2/msp
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=guide_fabric-ca
+      - FABRIC_LOGGING_SPEC=debug
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/tmp/hyperledger/HospitalB/peer2/tls-msp/signcerts/cert.pem
+      - CORE_PEER_TLS_KEY_FILE=/tmp/hyperledger/HospitalB/peer2/tls-msp/keystore/key.pem
+      - CORE_PEER_TLS_ROOTCERT_FILE=/tmp/hyperledger/HospitalB/peer2/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem
+      - CORE_PEER_GOSSIP_USELEADERELECTION=true
+      - CORE_PEER_GOSSIP_ORGLEADER=false
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer2-hospitalb:7051
+      - CORE_PEER_GOSSIP_SKIPHANDSHAKE=true
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1-hospitalb:7051
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/hospitalB/peer2
+    volumes:
+      - /var/run:/host/var/run
+      - /tmp/hyperledger/HospitalB/peer2:/tmp/hyperledger/HospitalB/peer2
+    networks:
+      - fabric-ca
+  peer1-insuranceProvider:
+    container_name: peer1-insuranceProvider
+    image: hyperledger/fabric-peer
+    environment:
+      - CORE_PEER_ID=peer1-insuranceProvider
+      - CORE_PEER_ADDRESS=peer1-insuranceProvider:7051
+      - CORE_PEER_LOCALMSPID=InsuranceProviderMSP
+      - CORE_PEER_MSPCONFIGPATH=/tmp/hyperledger/InsuranceProvider/peer1/msp
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=guide_fabric-ca
+      - FABRIC_LOGGING_SPEC=debug
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/tmp/hyperledger/InsuranceProvider/peer1/tls-msp/signcerts/cert.pem
+      - CORE_PEER_TLS_KEY_FILE=/tmp/hyperledger/InsuranceProvider/peer1/tls-msp/keystore/key.pem
+      - CORE_PEER_TLS_ROOTCERT_FILE=/tmp/hyperledger/InsuranceProvider/peer1/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem
+      - CORE_PEER_GOSSIP_USELEADERELECTION=true
+      - CORE_PEER_GOSSIP_ORGLEADER=false
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1-insuranceProvider:7051
+      - CORE_PEER_GOSSIP_SKIPHANDSHAKE=true
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/InsuranceProvider/peer1
+    volumes:
+      - /var/run:/host/var/run
+      - /tmp/hyperledger/InsuranceProvider/peer1:/tmp/hyperledger/InsuranceProvider/peer1
+    networks:
+      - fabric-ca
+  peer2-insuranceProvider:
+    container_name: peer2-insuranceProvider
+    image: hyperledger/fabric-peer
+    environment:
+      - CORE_PEER_ID=peer2-insuranceProvider
+      - CORE_PEER_ADDRESS=peer2-insuranceProvider:7051
+      - CORE_PEER_LOCALMSPID=HospitalBMSP
+      - CORE_PEER_MSPCONFIGPATH=/tmp/hyperledger/InsuranceProvider/peer2/msp
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=guide_fabric-ca
+      - FABRIC_LOGGING_SPEC=debug
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/tmp/hyperledger/InsuranceProvider/peer2/tls-msp/signcerts/cert.pem
+      - CORE_PEER_TLS_KEY_FILE=/tmp/hyperledger/InsuranceProvider/peer2/tls-msp/keystore/key.pem
+      - CORE_PEER_TLS_ROOTCERT_FILE=/tmp/hyperledger/InsuranceProvider/peer2/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem
+      - CORE_PEER_GOSSIP_USELEADERELECTION=true
+      - CORE_PEER_GOSSIP_ORGLEADER=false
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer2-insuranceProvider:7051
+      - CORE_PEER_GOSSIP_SKIPHANDSHAKE=true
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1-insuranceProvider:7051
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/InsuranceProvider/peer2
+    volumes:
+      - /var/run:/host/var/run
+      - /tmp/hyperledger/InsuranceProvider/peer2:/tmp/hyperledger/InsuranceProvider/peer2
+    networks:
+      - fabric-ca
+networks:
+  fabric-ca:
+    driver: bridge
